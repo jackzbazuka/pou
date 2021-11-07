@@ -13,7 +13,7 @@ export default function Layout({ children }) {
 						Pou.
 					</h1>
 					<p className='m-1 p-1 text-sm text-gray-400'>
-						Web app for OCR in images
+						Web app for OCR
 					</p>
 				</div>
 			</header>
