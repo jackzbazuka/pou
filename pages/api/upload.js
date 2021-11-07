@@ -40,12 +40,14 @@ apiRoute.post(async (req, res) => {
 		await worker.initialize('eng')
 
 		const {
-			data: { text },
+			data: { text, confidence },
 		} = await worker.recognize(`./public/uploads/${fileName}`)
+
+		await worker.terminate()
 
 		unlinkSync(`./public/uploads/${fileName}`)
 
-		res.json({ text })
+		res.json({ text, confidence })
 	} else {
 		res.json({ message: 'Image upload failed' })
 	}

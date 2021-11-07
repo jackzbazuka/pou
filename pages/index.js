@@ -6,11 +6,14 @@ import XHRUpload from '@uppy/xhr-upload'
 
 export default function Home() {
 	const [text, setText] = useState()
+	const [confidence, setConfidence] = useState()
 	const router = useRouter()
 	const uppy = useMemo(() => {
 		return new Uppy({
 			restrictions: {
 				maxNumberOfFiles: 1,
+				maxFileSize: 2000000,
+				maxTotalFileSize: 2000000,
 				allowedFileTypes: ['.jpg', '.jpeg', '.png'],
 			},
 		}).use(XHRUpload, {
@@ -18,11 +21,13 @@ export default function Home() {
 			fieldName: 'image',
 			formData: true,
 			method: 'POST',
+			timeout: 60 * 1000,
 		})
 	})
 
 	uppy.on('upload-success', (file, res) => {
 		setText(res.body.text.trim())
+		setConfidence(res.body.confidence)
 	})
 
 	useEffect(() => {
@@ -51,16 +56,16 @@ export default function Home() {
 					<div className='h-96 w-full p-3 text-current bg-gray-800 border rounded-lg overflow-y-auto'>
 						{text}
 					</div>
-					<div className='w-full flex flex-col items-center lg:flex-row lg:justify-center gap-3'>
+					<div className='w-full flex flex-col items-center lg:flex-row lg:justify-center gap-3 text-sm'>
 						<button
 							onClick={handleClipboard}
-							className='w-40 py-2 text-sm text-black bg-yellow-600 lg:hover:bg-yellow-700 rounded-lg transition-all duration-300'
+							className='w-40 py-2 text-black bg-yellow-600 lg:hover:bg-yellow-700 rounded-lg transition-all duration-300'
 						>
 							Copy to clipboard
 						</button>
 						<button
 							onClick={handleSearch}
-							className='w-40 py-2 text-sm text-black bg-yellow-600 lg:hover:bg-yellow-700 rounded-lg transition-all duration-300'
+							className='w-40 py-2 text-black bg-yellow-600 lg:hover:bg-yellow-700 rounded-lg transition-all duration-300'
 						>
 							Search Google
 						</button>
@@ -81,6 +86,7 @@ export default function Home() {
 								/>
 							</svg>
 						</button>
+						<span className='px-3 py-2 text-yellow-600'>{`Confidence ~ ${confidence}%`}</span>
 					</div>
 				</div>
 			) : (
