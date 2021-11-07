@@ -7,6 +7,7 @@ import XHRUpload from '@uppy/xhr-upload'
 export default function Home() {
 	const [text, setText] = useState()
 	const [confidence, setConfidence] = useState()
+	const [isCopied, setIsCopied] = useState(false)
 	const router = useRouter()
 	const uppy = useMemo(() => {
 		return new Uppy({
@@ -37,6 +38,10 @@ export default function Home() {
 	const handleClipboard = (e) => {
 		e.preventDefault()
 		navigator.clipboard.writeText(text)
+		setIsCopied(true)
+		setInterval(() => {
+			setIsCopied(false)
+		}, 2000)
 	}
 
 	const handleSearch = (e) => {
@@ -53,29 +58,35 @@ export default function Home() {
 		<div className='my-24 h-full w-full flex flex-row justify-center'>
 			{text ? (
 				<div className='w-10/12 md:9/12 lg:w-7/12 flex flex-col items-center gap-3'>
-					<div className='h-96 w-full p-3 text-current bg-gray-800 border rounded-lg overflow-y-auto'>
+					<div className='h-sul w-full p-3 text-current bg-gray-800 rounded-lg overflow-y-auto'>
 						{text}
 					</div>
-					<div className='w-full flex flex-col items-center lg:flex-row lg:justify-center gap-3 text-sm'>
-						<button
-							onClick={handleClipboard}
-							className='w-40 py-2 text-black bg-yellow-600 lg:hover:bg-yellow-700 rounded-lg transition-all duration-300'
-						>
-							Copy to clipboard
-						</button>
+					<div className='w-full flex flex-col items-center lg:flex-row lg:justify-center gap-3 text-xs font-semibold select-none'>
+						{isCopied ? (
+							<button className='w-32 py-2 text-green-400 bg-transparent border border-green-400 rounded-lg transition-all duration-300'>
+								Copied!
+							</button>
+						) : (
+							<button
+								onClick={handleClipboard}
+								className='w-32 py-2 text-yellow-500 lg:hover:text-yellow-600 border border-yellow-500 lg:hover:border-yellow-600 rounded-lg transition-all duration-300'
+							>
+								Copy to clipboard
+							</button>
+						)}
 						<button
 							onClick={handleSearch}
-							className='w-40 py-2 text-black bg-yellow-600 lg:hover:bg-yellow-700 rounded-lg transition-all duration-300'
+							className='w-32 py-2 text-yellow-500 lg:hover:text-yellow-600 border border-yellow-500 lg:hover:border-yellow-600 rounded-lg transition-all duration-300'
 						>
 							Search Google
 						</button>
 						<button
 							onClick={handleRefresh}
-							className='w-10 py-2 text-black bg-yellow-600 lg:hover:bg-yellow-700 rounded-lg transition-all duration-300'
+							className='w-9 py-2 text-yellow-500 lg:hover:text-yellow-600 border border-yellow-500 lg:hover:border-yellow-600 rounded-lg transition-all duration-300'
 						>
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
-								className='h-5 w-5 mx-auto'
+								className='h-4 w-4 mx-auto'
 								viewBox='0 0 20 20'
 								fill='currentColor'
 							>
@@ -86,17 +97,17 @@ export default function Home() {
 								/>
 							</svg>
 						</button>
-						<span className='px-3 py-2 text-yellow-600'>{`Confidence ~ ${confidence}%`}</span>
+						<span className='px-3 py-2 text-yellow-500'>{`Confidence ~ ${confidence}%`}</span>
 					</div>
 				</div>
 			) : (
-				<div className='w-10/12 md:9/12 lg:w-7/12'>
+				<div className='w-10/12 md:9/12 lg:w-7/12 relative'>
 					<Dashboard
 						uppy={uppy}
 						showProgressDetails={true}
-						proudlyDisplayPoweredByUppy={false}
-						height={400}
+						proudlyDisplayPoweredByUppy={true}
 						width='100%'
+						height={350}
 						theme='dark'
 					/>
 				</div>
