@@ -4,20 +4,9 @@ import path from 'path'
 import { createWorker } from 'tesseract.js'
 import { unlinkSync } from 'fs'
 
-let fileName
-
-const uploadImage = multer({
-	storage: multer.diskStorage({
-		destination: `./public/uploads`,
-		filename: (req, file, cb) => {
-			fileName = `${Date.now()}${path.extname(file.originalname)}`
-			cb(null, fileName)
-		},
-	}),
-}).single('image')
-
 const apiRoute = nextConnect({
 	onError(error, req, res) {
+		console.log(error)
 		res.status(501).json({
 			error: `Sorry something Happened! ${error.message}`,
 		})
@@ -27,13 +16,20 @@ const apiRoute = nextConnect({
 	},
 })
 
-apiRoute.use(uploadImage)
+apiRoute.use(
+	multer({
+		storage: multer.diskStorage({
+			destination: `./public/uploads`,
+			filename: (req, file, cb) => {
+				cb(null, `${Date.now()}${path.extname(file.originalname)}`)
+			},
+		}),
+	}).single('image')
+)
 
 apiRoute.post(async (req, res) => {
 	if (req.file) {
-		const worker = createWorker({
-			logger: (m) => console.log(m),
-		})
+		const worker = createWorker()
 
 		await worker.load()
 		await worker.loadLanguage('eng')
@@ -41,11 +37,11 @@ apiRoute.post(async (req, res) => {
 
 		const {
 			data: { text, confidence },
-		} = await worker.recognize(`./public/uploads/${fileName}`)
+		} = await worker.recognize(`./public/uploads/${req.file.filename}`)
 
 		await worker.terminate()
 
-		unlinkSync(`./public/uploads/${fileName}`)
+		unlinkSync(`./public/uploads/${req.file.filename}`)
 
 		res.json({ text, confidence })
 	} else {
@@ -57,6 +53,6 @@ export default apiRoute
 
 export const config = {
 	api: {
-		bodyParser: false, // Disallow body parsing, consume as stream
+		bodyParser: false,
 	},
 }
