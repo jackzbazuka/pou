@@ -7,7 +7,7 @@ export default function Layout({ children }) {
 				<link rel='icon' type='image/png' href='/favicon.png' />
 				<title>Pou.</title>
 			</NextHead>
-			<header className='w-full'>
+			<header className='w-full select-none'>
 				<div className='mt-10 w-full flex flex-col items-center'>
 					<h1 className='m-1 p-1 text-4xl font-bold text-green-400'>
 						Pou.
@@ -18,8 +18,8 @@ export default function Layout({ children }) {
 				</div>
 			</header>
 			{children}
-			<footer className='mt-5 mb-10 text-gray-400 text-sm'>
-				<span className='flex flex-row items-center'>
+			<footer className='mt-5 mb-10 text-gray-400 text-sm select-none'>
+				<p className='flex flex-row items-center'>
 					{'Made with'}
 					<svg
 						xmlns='http://www.w3.org/2000/svg'
@@ -41,7 +41,7 @@ export default function Layout({ children }) {
 					>
 						Milind Sathe
 					</a>
-				</span>
+				</p>
 			</footer>
 		</div>
 	)
