@@ -7,6 +7,6 @@ Technology Stack:
 -   Next.js
 -   React.js
 -   TailwindCSS
--   Firebase
+-   Firebase Analytics
 -   Tesseract.js
 -   Uppy
