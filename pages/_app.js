@@ -7,6 +7,7 @@ import { initialize } from '@/lib/clientApp'
 import * as gtag from '@/lib/gTag'
 
 export default function App({ Component, pageProps }) {
+	// Initialize the firebase SDK
 	initialize()
 
 	return (
